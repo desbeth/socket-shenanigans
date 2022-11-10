@@ -66,7 +66,7 @@ int main(void){
   char msg[BUFFER_LEN];        // Initializes a string of the buffer length called msg
   memset(msg, 0, BUFFER_LEN);  // Sets all of the bytes of msg to 0
 
-  printf("Enter command you would like to enter:\t");  // Prints out: "Enter command you would like to enter:   "
+  printf("Enter command you would like to send:\t");  // Prints out: "Enter command you would like to enter:   "
   fgets(msg, BUFFER_LEN, stdin);                       // Receives the input from stdin with length BUFFER_LEN and stores it in msg
   while(strcmp(msg, "quit\n") != 0){
       fflush(stdin);                                 // Clears the output buffer
@@ -79,7 +79,7 @@ int main(void){
       memset(msg, 0, BUFFER_LEN);                    // Sets all of the bytes of msg to 0
     }
 
-    printf("\nEnter command you would like to enter:\t");   // 
+    printf("\nEnter command you would like to send:\t");   // 
     fgets(msg, BUFFER_LEN, stdin);          // Receives the input from stdin with length BUFFER_LEN and stores it in msg
   }
   send(socket, msg, BUFFER_LEN, 0);   // Sends the message from the client_socket from msg
