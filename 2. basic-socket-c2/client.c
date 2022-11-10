@@ -9,7 +9,9 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
-#define BUFFER_LEN 4096        // Length in bytes of the messages which can be sent and received by the socket
+#include <poll.h>
+
+#define BUFFER_LEN 8192        // Length in bytes of the messages which can be sent and received by the socket
 #define IP_ADDR "127.0.0.1"    // Loopback address used for testing
 #define PORT 4444              // Testing port to be used for communication between the client and server
 
@@ -30,22 +32,28 @@ int main(void){
   server_addr.sin_port = htons(PORT);                 // Sets the port number to communicate over to 4444
   server_addr.sin_addr.s_addr = inet_addr(IP_ADDR);   // Sets the IP address to communicate over to the loopback address
 
-  connect(client_socket, (struct sockaddr*) &server_addr, sizeof(server_addr));  // Connects the client socket to the server address
+  connect(client_socket, (struct sockaddr*) &server_addr, sizeof(server_addr));  //
 
   char msg[BUFFER_LEN];                      // Initializes a string of the buffer length called msg
   printf("Enter message to send:\t");        // Prints the message: "Enter message to send:  "
   fgets(msg, BUFFER_LEN, stdin);             // Receives the input from stdin with length BUFFER_LEN and stores it in msg
   while(strcmp(msg, "quit\n") != 0){
-    fflush(stdin);                             // Clears the output buffer
+    fflush(stdin);                           // Clears the output buffer
     
     send(client_socket, msg, BUFFER_LEN, 0);   // Sends the message from the client_socket from msg
-    memset(msg, 0, BUFFER_LEN);  
-    recv(client_socket, msg, BUFFER_LEN, 0);   // Receives the message from the client_socket and stores it in msg
-    printf("%s\n", msg);                       // Prints msg, or what was received from the client socket
+    
+	struct pollfd polling = {client_socket, POLLIN, 0}; // Creates a poll struct called polling 
+	while(poll(&polling, 1, 500) > 0){					// Sees if a file descriptor has something to read, timeout is 500 milliseconds because we're trying to wait for data to come in
+      recv(client_socket, msg, BUFFER_LEN, 0);			// Receives the message from the client_socket and stores it in msg
+      printf("%s", msg);								// Prints msg, or what was received from the client socket
+      memset(msg, 0, BUFFER_LEN);						// Sets all of the bytes of buffer to 0
+    }
+	
 
-    memset(msg, 0, BUFFER_LEN);                // Sets all of the bytes of buffer to 0
-    printf("Enter message to send:\t");        // Prints the message: "Enter message to send:  "
+    //memset(msg, 0, BUFFER_LEN);                // Sets all of the bytes of buffer to 0
+    printf("\nEnter message to send:\t");        // Prints the message: "Enter message to send:  "
     fgets(msg, BUFFER_LEN, stdin);             // Receives the input from stdin with length BUFFER_LEN and stores it in msg
   }
   close(client_socket);
 }
+
