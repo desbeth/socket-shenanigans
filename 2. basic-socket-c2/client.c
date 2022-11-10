@@ -39,6 +39,7 @@ int main(void){
     fflush(stdin);                             // Clears the output buffer
     
     send(client_socket, msg, BUFFER_LEN, 0);   // Sends the message from the client_socket from msg
+    memset(msg, 0, BUFFER_LEN);  
     recv(client_socket, msg, BUFFER_LEN, 0);   // Receives the message from the client_socket and stores it in msg
     printf("%s\n", msg);                       // Prints msg, or what was received from the client socket
 
