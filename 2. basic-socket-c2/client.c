@@ -30,13 +30,13 @@ int main(void){
   server_addr.sin_port = htons(PORT);                 // Sets the port number to communicate over to 4444
   server_addr.sin_addr.s_addr = inet_addr(IP_ADDR);   // Sets the IP address to communicate over to the loopback address
 
-  connect(client_socket, (struct sockaddr*) &server_addr, sizeof(server_addr));  //
+  connect(client_socket, (struct sockaddr*) &server_addr, sizeof(server_addr));  // Connects the client socket to the server address
 
   char msg[BUFFER_LEN];                      // Initializes a string of the buffer length called msg
   printf("Enter message to send:\t");        // Prints the message: "Enter message to send:  "
   fgets(msg, BUFFER_LEN, stdin);             // Receives the input from stdin with length BUFFER_LEN and stores it in msg
   while(strcmp(msg, "quit\n") != 0){
-    fflush(stdin);                             //
+    fflush(stdin);                             // Clears the output buffer
     
     send(client_socket, msg, BUFFER_LEN, 0);   // Sends the message from the client_socket from msg
     recv(client_socket, msg, BUFFER_LEN, 0);   // Receives the message from the client_socket and stores it in msg
